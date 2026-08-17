@@ -176,6 +176,11 @@ p {
     0 12px 28px
     rgba(11, 92, 255, 0.22);
 }
+#tiktok-button {
+  background:linear-gradient()
+
+
+}
 
 .btn-light {
   color: var(--ink);
@@ -1063,21 +1068,21 @@ p {
 .founder-avatar {
   width: 58px;
   height: 58px;
-
   flex: 0 0 auto;
 
-  display: grid;
-
-  place-items: center;
-
   border-radius: 50%;
+  overflow: hidden;
 
   background: #fff;
-
-  color: var(--blue);
-
-  font-weight: 800;
 }
+
+.founder-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 
 .founder-avatar.alt {
   background:
