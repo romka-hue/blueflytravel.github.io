@@ -1,9 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;500;600;700;800&display=swap');
 
 
-/* =========================
+/* =========================================================
    VARIABLES
-========================= */
+========================================================= */
 
 :root {
   --blue: #0b5cff;
@@ -24,24 +24,28 @@
 }
 
 
-/* =========================
+/* =========================================================
    RESET
-========================= */
+========================================================= */
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
-
   margin: 0;
   padding: 0;
 }
 
 html {
   scroll-behavior: smooth;
-
   scroll-padding-top: 80px;
+  overflow-x: hidden;
 }
 
 body {
+  width: 100%;
+  min-width: 0;
+
   font-family:
     "Noto Sans Georgian",
     Arial,
@@ -61,15 +65,20 @@ body {
   overflow-x: hidden;
 }
 
+main,
+section,
+header,
+footer {
+  max-width: 100%;
+}
+
 a {
   color: inherit;
-
   text-decoration: none;
 }
 
 img {
   display: block;
-
   max-width: 100%;
 }
 
@@ -79,24 +88,23 @@ a {
 }
 
 
-/* =========================
+/* =========================================================
    CONTAINER
-========================= */
+========================================================= */
 
 .container {
-  width:
-    min(
-      1400px,
-      calc(100% - 48px)
-    );
+  width: min(
+    1400px,
+    calc(100% - 48px)
+  );
 
   margin-inline: auto;
 }
 
 
-/* =========================
+/* =========================================================
    TYPOGRAPHY
-========================= */
+========================================================= */
 
 .section {
   padding: 150px 0;
@@ -140,11 +148,14 @@ p {
 }
 
 
-/* =========================
+/* =========================================================
    BUTTONS
-========================= */
+========================================================= */
 
 .btn {
+  position: relative;
+  overflow: hidden;
+
   display: inline-flex;
 
   align-items: center;
@@ -152,10 +163,13 @@ p {
 
   padding: 12px 18px;
 
+  border: 0;
   border-radius: 999px;
 
   font-size: 12px;
   font-weight: 700;
+
+  white-space: nowrap;
 
   transition:
     transform 0.2s ease,
@@ -167,6 +181,30 @@ p {
   transform: translateY(-2px);
 }
 
+.btn::after {
+  content: "";
+
+  position: absolute;
+
+  width: 0;
+  height: 0;
+
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.18);
+
+  transform: translate(-50%, -50%);
+
+  transition:
+    width 0.5s ease,
+    height 0.5s ease;
+}
+
+.btn:hover::after {
+  width: 260px;
+  height: 260px;
+}
+
 .btn-primary {
   color: #fff;
 
@@ -176,22 +214,20 @@ p {
     0 12px 28px
     rgba(11, 92, 255, 0.22);
 }
-#tiktok-button {
-  background:black
-
-
-}
 
 .btn-light {
   color: var(--ink);
-
   background: #f1f5fb;
 }
 
+#tiktok-button {
+  background: #000;
+}
 
-/* =========================
+
+/* =========================================================
    EYEBROWS
-========================= */
+========================================================= */
 
 .eyebrow {
   color: #fff;
@@ -211,16 +247,17 @@ p {
 }
 
 
-/* =========================
-   HEADER
-========================= */
+/* =========================================================
+   HEADER / NAVBAR
+========================================================= */
 
 .header {
   position: fixed;
 
   top: 0;
   left: 0;
-  right: 0;
+
+  width: 100%;
 
   z-index: 100;
 
@@ -233,9 +270,17 @@ p {
   border-bottom:
     1px solid
     rgba(229, 234, 242, 0.9);
+
+  animation:
+    headerDrop
+    0.8s
+    cubic-bezier(0.22, 1, 0.36, 1)
+    both;
 }
 
 .nav {
+  position: relative;
+
   min-height: 78px;
 
   display: flex;
@@ -244,11 +289,13 @@ p {
 
   justify-content: space-between;
 
-  gap: 40px;
+  gap: 30px;
 }
 
 
-/* LOGO */
+/* =========================================================
+   LOGO
+========================================================= */
 
 .logo {
   display: flex;
@@ -258,6 +305,8 @@ p {
   gap: 11px;
 
   flex-shrink: 0;
+
+  min-width: 0;
 
   font-weight: 800;
 
@@ -269,7 +318,11 @@ p {
 
   flex-direction: column;
 
+  min-width: 0;
+
   line-height: 1;
+
+  white-space: nowrap;
 }
 
 .logo small {
@@ -288,6 +341,8 @@ p {
   width: 42px;
   height: 42px;
 
+  flex: 0 0 auto;
+
   object-fit: cover;
 
   border-radius: 12px;
@@ -301,15 +356,31 @@ p {
     rgba(11, 92, 255, 0.12);
 
   background: #fff;
+
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.logo:hover .logo-image {
+  transform: rotate(-4deg) scale(1.06);
+
+  box-shadow:
+    0 14px 30px
+    rgba(11, 92, 255, 0.28);
 }
 
 
-/* NAV LINKS */
+/* =========================================================
+   DESKTOP NAV LINKS
+========================================================= */
 
 .nav-links {
   display: flex;
 
   align-items: center;
+
+  justify-content: flex-end;
 
   gap:
     clamp(
@@ -330,17 +401,49 @@ p {
 }
 
 .nav-links a {
+  position: relative;
+
   transition:
     color 0.2s ease,
     opacity 0.2s ease;
 }
 
-.nav-links a:hover {
+.nav-links a:not(.nav-cta)::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  bottom: -5px;
+
+  width: 0;
+  height: 2px;
+
+  background: var(--blue);
+
+  border-radius: 999px;
+
+  transition:
+    width 0.3s ease;
+}
+
+.nav-links a:not(.nav-cta):hover {
+  color: var(--blue);
+}
+
+.nav-links a:not(.nav-cta):hover::after,
+.nav-links a.current:not(.nav-cta)::after {
+  width: 100%;
+}
+
+.nav-links a.current:not(.nav-cta) {
   color: var(--blue);
 }
 
 
-/* CTA */
+/* =========================================================
+   NAV CTA
+========================================================= */
 
 .nav-cta {
   padding: 11px 18px;
@@ -356,16 +459,33 @@ p {
     rgba(10, 15, 27, 0.12);
 
   white-space: nowrap;
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+}
+
+.nav-cta:hover {
+  transform: translateY(-3px);
+
+  box-shadow:
+    0 15px 30px
+    rgba(10, 15, 27, 0.18);
 }
 
 
-/* MOBILE MENU */
+/* =========================================================
+   MOBILE MENU BUTTON
+========================================================= */
 
 .menu-toggle {
   display: none;
 
   width: 42px;
   height: 42px;
+
+  flex: 0 0 42px;
 
   padding: 0;
 
@@ -383,11 +503,11 @@ p {
   flex-direction: column;
 
   gap: 5px;
-
-  flex-shrink: 0;
 }
 
 .menu-toggle span {
+  display: block;
+
   width: 20px;
   height: 2px;
 
@@ -400,10 +520,26 @@ p {
     opacity 0.25s ease;
 }
 
+.menu-toggle.active span:nth-child(1) {
+  transform:
+    translateY(7px)
+    rotate(45deg);
+}
 
-/* =========================
+.menu-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-toggle.active span:nth-child(3) {
+  transform:
+    translateY(-7px)
+    rotate(-45deg);
+}
+
+
+/* =========================================================
    HERO
-========================= */
+========================================================= */
 
 .hero {
   position: relative;
@@ -443,10 +579,26 @@ p {
 
 .hero-content h1 {
   max-width: 720px;
+
+  animation:
+    heroFadeUp
+    0.9s
+    0.25s
+    cubic-bezier(0.22, 1, 0.36, 1)
+    both;
 }
 
 .hero-content h1 span {
   color: var(--blue);
+}
+
+.hero-content .eyebrow {
+  animation:
+    heroFadeUp
+    0.8s
+    0.15s
+    cubic-bezier(0.22, 1, 0.36, 1)
+    both;
 }
 
 .hero-description {
@@ -457,9 +609,19 @@ p {
   font-size: 16px;
 
   color: var(--muted);
+
+  animation:
+    heroFadeUp
+    0.8s
+    0.4s
+    cubic-bezier(0.22, 1, 0.36, 1)
+    both;
 }
 
 .hero-button {
+  position: relative;
+  overflow: hidden;
+
   width: fit-content;
 
   margin-top: 30px;
@@ -483,6 +645,13 @@ p {
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;
+
+  animation:
+    heroFadeUp
+    0.8s
+    0.55s
+    cubic-bezier(0.22, 1, 0.36, 1)
+    both;
 }
 
 .hero-button:hover {
@@ -491,6 +660,34 @@ p {
   box-shadow:
     0 20px 40px
     rgba(11, 92, 255, 0.3);
+}
+
+.hero-button::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: -120%;
+
+  width: 80%;
+  height: 100%;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.35),
+      transparent
+    );
+
+  transform: skewX(-20deg);
+
+  transition: left 0.7s ease;
+}
+
+.hero-button:hover::before {
+  left: 140%;
 }
 
 .hero-image {
@@ -508,6 +705,13 @@ p {
     ellipse(
       75% 100% at 75% 50%
     );
+
+  animation:
+    heroImageIn
+    1.4s
+    0.15s
+    cubic-bezier(0.22, 1, 0.36, 1)
+    both;
 }
 
 .hero-image img {
@@ -515,12 +719,19 @@ p {
   height: 100%;
 
   object-fit: cover;
+
+  animation:
+    heroImageFloat
+    12s
+    ease-in-out
+    infinite
+    alternate;
 }
 
 
-/* =========================
+/* =========================================================
    OFFERS
-========================= */
+========================================================= */
 
 .section-heading {
   display: flex;
@@ -550,9 +761,9 @@ p {
 }
 
 .offer-card {
-  padding: 30px 28px 26px;
-
   min-height: 300px;
+
+  padding: 30px 28px 26px;
 
   display: flex;
 
@@ -571,13 +782,24 @@ p {
 
   box-shadow: var(--shadow);
 
+  opacity: 0;
+  transform: translateY(35px);
+
   transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease;
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.3s ease;
+}
+
+.offer-card.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .offer-card:hover {
-  transform: translateY(-6px);
+  transform:
+    translateY(-9px)
+    scale(1.01);
 
   box-shadow:
     0 28px 70px
@@ -630,22 +852,32 @@ p {
   font-weight: 800;
 
   margin-top: 18px;
+
+  transition:
+    color 0.3s ease,
+    transform 0.3s ease;
+}
+
+.offer-card:hover .offer-price {
+  color: var(--blue);
+
+  transform:
+    translateX(4px);
 }
 
 .offer-card .btn {
-  margin-top: 22px;
-
   width: 100%;
+
+  margin-top: 22px;
 }
 
 
-/* =========================
+/* =========================================================
    SERVICES
-========================= */
+========================================================= */
 
 .services {
   background: var(--ink);
-
   color: #fff;
 }
 
@@ -663,9 +895,9 @@ p {
 }
 
 .service-card {
-  padding: 30px;
-
   min-height: 260px;
+
+  padding: 30px;
 
   border:
     1px solid
@@ -675,14 +907,53 @@ p {
 
   background:
     rgba(255, 255, 255, 0.045);
+
+  opacity: 0;
+  transform: translateY(30px);
+
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.service-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.service-card:hover {
+  transform: translateY(-8px);
+
+  background:
+    rgba(255, 255, 255, 0.075);
+
+  border-color:
+    rgba(255, 255, 255, 0.2);
 }
 
 .service-card .icon {
+  display: inline-block;
+
   color: #70a1ff;
 
   font-size: 27px;
 
   margin-bottom: 35px;
+
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.3s ease;
+}
+
+.service-card:hover .icon {
+  transform:
+    translateY(-5px)
+    rotate(-8deg)
+    scale(1.12);
+
+  color: #fff;
 }
 
 .service-card h3 {
@@ -698,9 +969,9 @@ p {
 }
 
 
-/* =========================
+/* =========================================================
    ABOUT
-========================= */
+========================================================= */
 
 .about {
   background: var(--soft);
@@ -718,13 +989,13 @@ p {
 }
 
 .about-image {
-  min-height: 520px;
+  position: relative;
 
-  border-radius: 30px;
+  min-height: 520px;
 
   overflow: hidden;
 
-  position: relative;
+  border-radius: 30px;
 
   background:
     linear-gradient(
@@ -735,6 +1006,18 @@ p {
     url("../source/logo.jpg")
       center / cover
       no-repeat;
+
+  transition:
+    transform 0.5s ease,
+    box-shadow 0.5s ease;
+}
+
+.about-image:hover {
+  transform: translateY(-7px);
+
+  box-shadow:
+    0 30px 70px
+    rgba(15, 35, 75, 0.18);
 }
 
 .about-image::before {
@@ -781,6 +1064,13 @@ p {
   font-weight: 800;
 
   letter-spacing: -0.07em;
+
+  transition:
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.about-image:hover .image-placeholder span {
+  transform: scale(1.04);
 }
 
 .image-placeholder small {
@@ -813,6 +1103,16 @@ p {
 
   border-top:
     1px solid #d8e0eb;
+
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.about-stats div:hover {
+  transform: translateY(-5px);
+
+  border-color: var(--blue);
 }
 
 .about-stats strong {
@@ -828,9 +1128,9 @@ p {
 }
 
 
-/* =========================
+/* =========================================================
    DESTINATIONS
-========================= */
+========================================================= */
 
 .destination-grid {
   display: grid;
@@ -866,6 +1166,30 @@ p {
   background-repeat: no-repeat;
 
   box-shadow: var(--shadow);
+
+  opacity: 0;
+  transform: translateY(35px);
+
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.4s ease;
+}
+
+.destination-card.visible {
+  opacity: 1;
+
+  transform: translateY(0);
+}
+
+.destination-card:hover {
+  transform:
+    translateY(-8px)
+    scale(1.015);
+
+  box-shadow:
+    0 30px 70px
+    rgba(15, 35, 75, 0.22);
 }
 
 .destination-card::before {
@@ -880,6 +1204,30 @@ p {
       transparent 25%,
       rgba(0, 0, 0, 0.72)
     );
+}
+
+.destination-card::after {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.12),
+      transparent 40%
+    );
+
+  opacity: 0;
+
+  transition:
+    opacity 0.4s ease;
+}
+
+.destination-card:hover::after {
+  opacity: 1;
 }
 
 .destination-card > div {
@@ -937,6 +1285,8 @@ p {
 }
 
 .france {
+  grid-column: 2 / 4;
+
   background-image:
     linear-gradient(
       145deg,
@@ -944,14 +1294,12 @@ p {
       rgba(19, 26, 41, 0.72)
     ),
     url("../source/franceimage.png");
-
-  grid-column: 2 / 4;
 }
 
 
-/* =========================
+/* =========================================================
    PROCESS
-========================= */
+========================================================= */
 
 .process {
   background: #f7f9fc;
@@ -975,14 +1323,44 @@ p {
 
   border-top:
     1px solid #cdd5e2;
+
+  opacity: 0;
+  transform: translateY(30px);
+
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.3s ease;
+}
+
+.step.visible {
+  opacity: 1;
+
+  transform: translateY(0);
+}
+
+.step:hover {
+  border-color: var(--blue);
 }
 
 .step > span {
+  display: inline-block;
+
   color: var(--blue);
 
   font-size: 12px;
 
   font-weight: 800;
+
+  transition:
+    transform 0.3s ease,
+    letter-spacing 0.3s ease;
+}
+
+.step:hover > span {
+  transform: translateX(5px);
+
+  letter-spacing: 0.15em;
 }
 
 .step h3 {
@@ -996,9 +1374,9 @@ p {
 }
 
 
-/* =========================
+/* =========================================================
    TEAM
-========================= */
+========================================================= */
 
 .team {
   background:
@@ -1063,26 +1441,55 @@ p {
   box-shadow:
     inset 0 1px 0
     rgba(255, 255, 255, 0.08);
+
+  opacity: 0;
+  transform: translateX(35px);
+
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.3s ease;
+}
+
+.founder-card.visible {
+  opacity: 1;
+
+  transform: translateX(0);
+}
+
+.founder-card:hover {
+  transform: translateX(-6px);
+
+  background:
+    rgba(255, 255, 255, 0.17);
 }
 
 .founder-avatar {
   width: 58px;
   height: 58px;
+
   flex: 0 0 auto;
 
   border-radius: 50%;
+
   overflow: hidden;
 
   background: #fff;
+
+  transition:
+    transform 0.4s ease;
+}
+
+.founder-card:hover .founder-avatar {
+  transform: scale(1.08);
 }
 
 .founder-avatar img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  display: block;
-}
 
+  object-fit: cover;
+}
 
 .founder-avatar.alt {
   background:
@@ -1107,9 +1514,9 @@ p {
 }
 
 
-/* =========================
+/* =========================================================
    SOCIAL
-========================= */
+========================================================= */
 
 .social-box {
   display: flex;
@@ -1118,7 +1525,7 @@ p {
 
   justify-content: space-between;
 
-  gap: 50px;
+  gap: 20px;
 
   padding: 65px;
 
@@ -1134,6 +1541,23 @@ p {
   border:
     1px solid
     rgba(11, 18, 32, 0.04);
+
+  opacity: 0;
+  transform: translateY(35px);
+
+  transition:
+    opacity 0.8s ease,
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.social-box.visible {
+  opacity: 1;
+
+  transform: translateY(0);
+}
+
+.social-box > div {
+  min-width: 0;
 }
 
 .social-box p:not(.eyebrow) {
@@ -1143,9 +1567,9 @@ p {
 }
 
 
-/* =========================
+/* =========================================================
    CONTACT
-========================= */
+========================================================= */
 
 .contact {
   background: var(--ink);
@@ -1188,6 +1612,26 @@ p {
   box-shadow:
     0 24px 60px
     rgba(0, 0, 0, 0.14);
+
+  opacity: 0;
+  transform: translateX(40px);
+
+  transition:
+    opacity 0.8s ease,
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.4s ease;
+}
+
+.contact-card.visible {
+  opacity: 1;
+
+  transform: translateX(0);
+}
+
+.contact-card:hover {
+  box-shadow:
+    0 30px 80px
+    rgba(0, 0, 0, 0.2);
 }
 
 .contact-card > div {
@@ -1210,6 +1654,17 @@ p {
 .contact-card strong,
 .contact-card a {
   font-size: 14px;
+
+  overflow-wrap: anywhere;
+}
+
+.contact-card a {
+  transition:
+    color 0.25s ease;
+}
+
+.contact-card a:hover {
+  color: var(--blue);
 }
 
 .contact-buttons {
@@ -1227,9 +1682,9 @@ p {
 }
 
 
-/* =========================
+/* =========================================================
    FOOTER
-========================= */
+========================================================= */
 
 .footer {
   background: #070d17;
@@ -1260,16 +1715,16 @@ p {
 }
 
 
-/* =========================
-   TABLET
-========================= */
+/* =========================================================
+   TABLET — 1050px
+========================================================= */
 
 @media (max-width: 1050px) {
 
   .container {
     width:
       min(
-        100% - 36px,
+        calc(100% - 36px),
         920px
       );
   }
@@ -1356,17 +1811,13 @@ p {
 
   .social-box {
     padding: 45px;
-
-    flex-direction: column;
-
-    align-items: flex-start;
   }
 }
 
 
-/* =========================
-   TABLET HERO
-========================= */
+/* =========================================================
+   TABLET HERO — 900px
+========================================================= */
 
 @media (max-width: 900px) {
 
@@ -1396,21 +1847,48 @@ p {
 }
 
 
-/* =========================
-   MOBILE NAV
-========================= */
+/* =========================================================
+   MOBILE — 760px
+========================================================= */
 
 @media (max-width: 760px) {
+
+  /* -------------------------------------------------------
+     CONTAINER
+  ------------------------------------------------------- */
 
   .container {
     width:
       calc(100% - 28px);
+
+    max-width: none;
+  }
+
+
+  /* -------------------------------------------------------
+     NAVBAR
+  ------------------------------------------------------- */
+
+  .header {
+    width: 100%;
   }
 
   .nav {
+    position: relative;
+
+    width: 100%;
+
     min-height: 68px;
 
     gap: 12px;
+  }
+
+  .logo {
+    flex: 1 1 auto;
+
+    min-width: 0;
+
+    gap: 9px;
   }
 
   .logo-image {
@@ -1420,12 +1898,10 @@ p {
     border-radius: 10px;
   }
 
-  .logo {
-    gap: 9px;
-  }
-
   .brand-wordmark {
     font-size: 15px;
+
+    overflow: hidden;
   }
 
   .logo small {
@@ -1435,15 +1911,37 @@ p {
   }
 
 
+  /* -------------------------------------------------------
+     HAMBURGER
+  ------------------------------------------------------- */
+
+  .menu-toggle {
+    display: flex;
+
+    flex: 0 0 42px;
+
+    width: 42px;
+    height: 42px;
+
+    margin-left: auto;
+  }
+
+
+  /* -------------------------------------------------------
+     MOBILE DROPDOWN
+  ------------------------------------------------------- */
+
   .nav-links {
     position: absolute;
 
-    top: calc(100% + 10px);
+    top: calc(100% + 8px);
 
-    left: 14px;
-    right: 14px;
+    left: 0;
+    right: 0;
 
-    display: none;
+    width: 100%;
+
+    display: flex;
 
     flex-direction: column;
 
@@ -1461,18 +1959,45 @@ p {
     border:
       1px solid var(--line);
 
-    border-radius: 20px;
+    border-radius: 18px;
 
     box-shadow:
       0 20px 50px
       rgba(15, 35, 75, 0.15);
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    transform:
+      translateY(-10px)
+      scale(0.98);
+
+    pointer-events: none;
+
+    transition:
+      opacity 0.25s ease,
+      transform 0.25s ease,
+      visibility 0.25s ease;
   }
 
   .nav-links.active {
     display: flex;
+
+    opacity: 1;
+
+    visibility: visible;
+
+    transform:
+      translateY(0)
+      scale(1);
+
+    pointer-events: auto;
   }
 
   .nav-links a {
+    width: 100%;
+
     padding: 13px 15px;
 
     border-radius: 12px;
@@ -1480,38 +2005,26 @@ p {
     font-size: 11px;
   }
 
+  .nav-links a:not(.nav-cta)::after {
+    display: none;
+  }
+
   .nav-links a:hover {
     background: #f1f5fb;
   }
 
   .nav-links .nav-cta {
+    width: 100%;
+
     margin-top: 4px;
 
     text-align: center;
   }
 
-  .menu-toggle {
-    display: flex;
-  }
 
-  .menu-toggle.active span:nth-child(1) {
-    transform:
-      translateY(7px)
-      rotate(45deg);
-  }
-
-  .menu-toggle.active span:nth-child(2) {
-    opacity: 0;
-  }
-
-  .menu-toggle.active span:nth-child(3) {
-    transform:
-      translateY(-7px)
-      rotate(-45deg);
-  }
-
-
-  /* HERO */
+  /* -------------------------------------------------------
+     HERO
+  ------------------------------------------------------- */
 
   .hero {
     min-height: 100svh;
@@ -1601,7 +2114,9 @@ p {
   }
 
 
-  /* GENERAL */
+  /* -------------------------------------------------------
+     GENERAL SECTIONS
+  ------------------------------------------------------- */
 
   .section {
     padding: 100px 0;
@@ -1618,7 +2133,9 @@ p {
   }
 
 
-  /* OFFERS */
+  /* -------------------------------------------------------
+     OFFERS
+  ------------------------------------------------------- */
 
   .offer-grid {
     grid-template-columns: 1fr;
@@ -1629,7 +2146,9 @@ p {
   }
 
 
-  /* SERVICES */
+  /* -------------------------------------------------------
+     SERVICES
+  ------------------------------------------------------- */
 
   .service-grid {
     grid-template-columns: 1fr;
@@ -1640,7 +2159,9 @@ p {
   }
 
 
-  /* ABOUT */
+  /* -------------------------------------------------------
+     ABOUT
+  ------------------------------------------------------- */
 
   .about-image {
     min-height: 330px;
@@ -1655,7 +2176,9 @@ p {
   }
 
 
-  /* DESTINATIONS */
+  /* -------------------------------------------------------
+     DESTINATIONS
+  ------------------------------------------------------- */
 
   .destination-grid {
     grid-template-columns: 1fr;
@@ -1676,10 +2199,14 @@ p {
 
   .destination-card {
     border-radius: 22px;
+
+    min-width: 0;
   }
 
 
-  /* PROCESS */
+  /* -------------------------------------------------------
+     PROCESS
+  ------------------------------------------------------- */
 
   .process-grid {
     grid-template-columns: 1fr;
@@ -1692,23 +2219,37 @@ p {
   }
 
 
-  /* TEAM */
+  /* -------------------------------------------------------
+     TEAM
+  ------------------------------------------------------- */
 
   .founder-stack {
     grid-template-columns: 1fr;
   }
 
   .founder-card {
+    min-width: 0;
+
+    width: 100%;
+
     padding: 20px;
   }
 
 
-  /* SOCIAL */
+  /* -------------------------------------------------------
+     SOCIAL
+  ------------------------------------------------------- */
 
   .social-box {
     padding: 32px 24px;
 
     border-radius: 22px;
+
+    flex-direction: column;
+
+    align-items: stretch;
+
+    gap: 12px;
   }
 
   .social-box .btn {
@@ -1718,13 +2259,17 @@ p {
   }
 
 
-  /* CONTACT */
+  /* -------------------------------------------------------
+     CONTACT
+  ------------------------------------------------------- */
 
   .contact-grid {
     gap: 40px;
   }
 
   .contact-card {
+    width: 100%;
+
     padding: 25px 20px;
 
     border-radius: 20px;
@@ -1741,7 +2286,9 @@ p {
   }
 
 
-  /* FOOTER */
+  /* -------------------------------------------------------
+     FOOTER
+  ------------------------------------------------------- */
 
   .footer-inner {
     flex-direction: column;
@@ -1753,9 +2300,9 @@ p {
 }
 
 
-/* =========================
-   SMALL PHONES
-========================= */
+/* =========================================================
+   SMALL PHONES — 420px
+========================================================= */
 
 @media (max-width: 420px) {
 
@@ -1782,6 +2329,8 @@ p {
   }
 
   .menu-toggle {
+    flex-basis: 40px;
+
     width: 40px;
     height: 40px;
   }
@@ -1807,604 +2356,131 @@ p {
         3rem
       );
   }
+
+  .social-box {
+    padding:
+      28px 20px;
+  }
 }
+
+
+/* =========================================================
+   EXTRA SMALL PHONES — 360px
+========================================================= */
+
+@media (max-width: 360px) {
+
+  .container {
+    width:
+      calc(100% - 18px);
+  }
+
+  .nav {
+    gap: 8px;
+  }
+
+  .logo {
+    gap: 7px;
+  }
+
+  .logo-image {
+    width: 33px;
+    height: 33px;
+  }
+
+  .brand-wordmark {
+    font-size: 13px;
+  }
+
+  .menu-toggle {
+    width: 38px;
+    height: 38px;
+
+    flex-basis: 38px;
+  }
+
+  .hero-content {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .hero-content h1 {
+    font-size: 2.5rem;
+  }
+}
+
+
 /* =========================================================
    ANIMATIONS
 ========================================================= */
 
-/* ---------- Base reveal ---------- */
-
-.reveal {
-  opacity: 0;
-  transform: translateY(35px);
-  transition:
-    opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-
-/* ---------- Header ---------- */
-
-.header {
-  animation: headerDrop 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
 @keyframes headerDrop {
   from {
     opacity: 0;
-    transform: translateY(-100%);
+
+    transform:
+      translateY(-100%);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+
+    transform:
+      translateY(0);
   }
-}
-
-
-/* ---------- Logo ---------- */
-
-.logo-image {
-  transition:
-    transform 0.35s ease,
-    box-shadow 0.35s ease;
-}
-
-.logo:hover .logo-image {
-  transform: rotate(-4deg) scale(1.06);
-  box-shadow:
-    0 14px 30px rgba(11, 92, 255, 0.28);
-}
-
-
-/* ---------- Navigation ---------- */
-
-.nav-links a {
-  position: relative;
-}
-
-.nav-links a:not(.nav-cta)::after {
-  content: "";
-
-  position: absolute;
-  left: 0;
-  bottom: -5px;
-
-  width: 0;
-  height: 2px;
-
-  background: var(--blue);
-
-  border-radius: 999px;
-
-  transition:
-    width 0.3s ease;
-}
-
-.nav-links a:not(.nav-cta):hover::after {
-  width: 100%;
-}
-
-.nav-cta {
-  transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease,
-    background 0.25s ease;
-}
-
-.nav-cta:hover {
-  transform: translateY(-3px);
-  box-shadow:
-    0 15px 30px rgba(10, 15, 27, 0.18);
-}
-
-
-/* =========================================================
-   HERO
-========================================================= */
-
-.hero-content .eyebrow {
-  animation:
-    heroFadeUp 0.8s 0.15s cubic-bezier(0.22, 1, 0.36, 1)
-    both;
-}
-
-.hero-content h1 {
-  animation:
-    heroFadeUp 0.9s 0.25s cubic-bezier(0.22, 1, 0.36, 1)
-    both;
-}
-
-.hero-description {
-  animation:
-    heroFadeUp 0.8s 0.4s cubic-bezier(0.22, 1, 0.36, 1)
-    both;
-}
-
-.hero-button {
-  animation:
-    heroFadeUp 0.8s 0.55s cubic-bezier(0.22, 1, 0.36, 1)
-    both;
 }
 
 @keyframes heroFadeUp {
   from {
     opacity: 0;
-    transform: translateY(35px);
+
+    transform:
+      translateY(35px);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+
+    transform:
+      translateY(0);
   }
-}
-
-
-/* Hero image entrance */
-
-.hero-image {
-  animation:
-    heroImageIn 1.4s 0.15s cubic-bezier(0.22, 1, 0.36, 1)
-    both;
 }
 
 @keyframes heroImageIn {
   from {
     opacity: 0;
-    transform: scale(1.08);
+
+    transform:
+      scale(1.08);
   }
 
   to {
     opacity: 1;
-    transform: scale(1);
+
+    transform:
+      scale(1);
   }
-}
-
-
-/* Subtle image movement */
-
-.hero-image img {
-  animation: heroImageFloat 12s ease-in-out infinite alternate;
 }
 
 @keyframes heroImageFloat {
   from {
-    transform: scale(1);
+    transform:
+      scale(1);
   }
 
   to {
-    transform: scale(1.045);
+    transform:
+      scale(1.045);
   }
 }
 
+@keyframes buttonRipple {
+  to {
+    transform:
+      scale(2);
 
-/* Hero button */
-
-.hero-button {
-  position: relative;
-  overflow: hidden;
-}
-
-.hero-button::before {
-  content: "";
-
-  position: absolute;
-
-  top: 0;
-  left: -120%;
-
-  width: 80%;
-  height: 100%;
-
-  background:
-    linear-gradient(
-      90deg,
-      transparent,
-      rgba(255,255,255,0.35),
-      transparent
-    );
-
-  transform: skewX(-20deg);
-
-  transition: left 0.7s ease;
-}
-
-.hero-button:hover::before {
-  left: 140%;
-}
-
-
-/* =========================================================
-   OFFER CARDS
-========================================================= */
-
-.offer-card {
-  opacity: 0;
-  transform: translateY(35px);
-}
-
-.offer-card.visible {
-  opacity: 1;
-
-  transform: translateY(0);
-
-  transition:
-    opacity 0.7s ease,
-    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.3s ease;
-}
-
-.offer-card:hover {
-  transform: translateY(-9px) scale(1.01);
-}
-
-
-/* Offer icon */
-
-.offer-top > span:last-child {
-  display: inline-block;
-
-  transition:
-    transform 0.35s ease;
-}
-
-.offer-card:hover .offer-top > span:last-child {
-  transform:
-    translateY(-3px)
-    rotate(-8deg)
-    scale(1.15);
-}
-
-
-/* Price */
-
-.offer-price {
-  transition:
-    color 0.3s ease,
-    transform 0.3s ease;
-}
-
-.offer-card:hover .offer-price {
-  color: var(--blue);
-  transform: translateX(4px);
-}
-
-
-/* =========================================================
-   SERVICES
-========================================================= */
-
-.service-card {
-  opacity: 0;
-  transform: translateY(30px);
-
-  transition:
-    opacity 0.7s ease,
-    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-    background 0.3s ease,
-    border-color 0.3s ease;
-}
-
-.service-card.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.service-card:hover {
-  transform: translateY(-8px);
-
-  background:
-    rgba(255, 255, 255, 0.075);
-
-  border-color:
-    rgba(255, 255, 255, 0.2);
-}
-
-.service-card .icon {
-  display: inline-block;
-
-  transition:
-    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-    color 0.3s ease;
-}
-
-.service-card:hover .icon {
-  transform:
-    translateY(-5px)
-    rotate(-8deg)
-    scale(1.12);
-
-  color: #fff;
-}
-
-
-/* =========================================================
-   ABOUT
-========================================================= */
-
-.about-image {
-  transition:
-    transform 0.5s ease,
-    box-shadow 0.5s ease;
-}
-
-.about-image:hover {
-  transform: translateY(-7px);
-
-  box-shadow:
-    0 30px 70px rgba(15, 35, 75, 0.18);
-}
-
-.image-placeholder span {
-  transition:
-    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.about-image:hover .image-placeholder span {
-  transform: scale(1.04);
-}
-
-
-/* Stats */
-
-.about-stats div {
-  transition:
-    transform 0.3s ease,
-    border-color 0.3s ease;
-}
-
-.about-stats div:hover {
-  transform: translateY(-5px);
-  border-color: var(--blue);
-}
-
-
-/* =========================================================
-   DESTINATIONS
-========================================================= */
-
-.destination-card {
-  opacity: 0;
-  transform: translateY(35px);
-
-  transition:
-    opacity 0.7s ease,
-    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.4s ease;
-}
-
-.destination-card.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.destination-card::after {
-  content: "";
-
-  position: absolute;
-
-  inset: 0;
-
-  background:
-    linear-gradient(
-      135deg,
-      rgba(255,255,255,0.12),
-      transparent 40%
-    );
-
-  opacity: 0;
-
-  transition:
-    opacity 0.4s ease;
-}
-
-.destination-card:hover {
-  transform: translateY(-8px) scale(1.015);
-
-  box-shadow:
-    0 30px 70px rgba(15, 35, 75, 0.22);
-}
-
-.destination-card:hover::after {
-  opacity: 1;
-}
-
-
-/* =========================================================
-   PROCESS
-========================================================= */
-
-.step {
-  opacity: 0;
-  transform: translateY(30px);
-
-  transition:
-    opacity 0.7s ease,
-    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.3s ease;
-}
-
-.step.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.step:hover {
-  border-color: var(--blue);
-}
-
-.step > span {
-  display: inline-block;
-
-  transition:
-    transform 0.3s ease,
-    letter-spacing 0.3s ease;
-}
-
-.step:hover > span {
-  transform: translateX(5px);
-  letter-spacing: 0.15em;
-}
-
-
-/* =========================================================
-   TEAM
-========================================================= */
-
-.founder-card {
-  opacity: 0;
-  transform: translateX(35px);
-
-  transition:
-    opacity 0.7s ease,
-    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-    background 0.3s ease;
-}
-
-.founder-card.visible {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.founder-card:hover {
-  transform: translateX(-6px);
-
-  background:
-    rgba(255, 255, 255, 0.17);
-}
-
-.founder-avatar {
-  transition:
-    transform 0.4s ease;
-}
-
-.founder-card:hover .founder-avatar {
-  transform: scale(1.08);
-}
-
-
-/* =========================================================
-   SOCIAL
-========================================================= */
-
-.social-box {
-  opacity: 0;
-  transform: translateY(35px);
-
-  transition:
-    opacity 0.8s ease,
-    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.social-box.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-
-/* =========================================================
-   CONTACT
-========================================================= */
-
-.contact-card {
-  opacity: 0;
-  transform: translateX(40px);
-
-  transition:
-    opacity 0.8s ease,
-    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.4s ease;
-}
-
-.contact-card.visible {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.contact-card:hover {
-  box-shadow:
-    0 30px 80px rgba(0, 0, 0, 0.2);
-}
-
-.contact-card a {
-  transition:
-    color 0.25s ease;
-}
-
-.contact-card a:hover {
-  color: var(--blue);
-}
-
-
-/* =========================================================
-   BUTTON MICRO-ANIMATION
-========================================================= */
-
-.btn {
-  position: relative;
-  overflow: hidden;
-}
-
-.btn::after {
-  content: "";
-
-  position: absolute;
-
-  width: 0;
-  height: 0;
-
-  border-radius: 50%;
-
-  background: rgba(255,255,255,0.18);
-
-  transform: translate(-50%, -50%);
-
-  transition:
-    width 0.5s ease,
-    height 0.5s ease;
-}
-
-.btn:hover::after {
-  width: 260px;
-  height: 260px;
-}
-
-
-/* =========================================================
-   MOBILE MENU
-========================================================= */
-
-@media (max-width: 760px) {
-
-  .nav-links {
     opacity: 0;
-    transform:
-      translateY(-10px)
-      scale(0.98);
-
-    transition:
-      opacity 0.25s ease,
-      transform 0.25s ease;
-
-    pointer-events: none;
   }
-
-  .nav-links.active {
-    display: flex;
-
-    opacity: 1;
-    transform:
-      translateY(0)
-      scale(1);
-
-    pointer-events: auto;
-  }
-
 }
 
 
@@ -2412,15 +2488,31 @@ p {
    ACCESSIBILITY
 ========================================================= */
 
+a:focus-visible,
+button:focus-visible {
+  outline:
+    3px solid
+    rgba(11, 92, 255, 0.35);
+
+  outline-offset: 4px;
+}
+
 @media (prefers-reduced-motion: reduce) {
 
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+    animation-duration:
+      0.01ms !important;
+
+    animation-iteration-count:
+      1 !important;
+
+    transition-duration:
+      0.01ms !important;
+
+    scroll-behavior:
+      auto !important;
   }
 
   .reveal,
@@ -2432,32 +2524,7 @@ p {
   .social-box,
   .contact-card {
     opacity: 1 !important;
+
     transform: none !important;
   }
-}
-@keyframes buttonRipple {
-  to {
-    transform: scale(2);
-    opacity: 0;
-  }
-}
-
-
-/* Active navigation link */
-
-.nav-links a.current:not(.nav-cta) {
-  color: var(--blue);
-}
-
-.nav-links a.current:not(.nav-cta)::after {
-  width: 100%;
-}
-
-
-/* Smooth focus states */
-
-a:focus-visible,
-button:focus-visible {
-  outline: 3px solid rgba(11, 92, 255, 0.35);
-  outline-offset: 4px;
 }
